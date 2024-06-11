@@ -1,5 +1,6 @@
 package com.chatsocket.component;
 
+import com.chatsocket.model.Model_File_Sender;
 import java.awt.Color;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -22,16 +23,21 @@ public class Chat_Right extends javax.swing.JLayeredPane {
         txt.seen();
     }
     
-    public void setImage(Icon ...image) {
-        txt.setImage(true, image);
+    public void setImage(Model_File_Sender fileSender) {
+        txt.setImage(true, fileSender);
     }
-    
-    public void setImage(String ...image) {
-        txt.setImage(false, image);
+
+    public void setImage(String... image) {
+       // txt.setImage(false, image);
     }
     
     public void setFile(String fileName, String fileSize) {
         txt.setFile(fileName, fileSize);
+    }
+    
+    public void setEmoji(Icon icon) {
+        txt.hideText();
+        txt.setEmoji(true, icon);
     }
     
     public void setTime () {

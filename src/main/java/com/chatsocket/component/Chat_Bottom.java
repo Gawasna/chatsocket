@@ -1,5 +1,6 @@
 package com.chatsocket.component;
 
+import com.chatsocket.app.MessageType;
 import com.chatsocket.event.PublicEvent;
 import com.chatsocket.model.Model_Send_Message;
 import com.chatsocket.model.Model_User_Account;
@@ -22,12 +23,13 @@ import net.miginfocom.swing.MigLayout;
 
 public class Chat_Bottom extends javax.swing.JPanel {
 
-    public Model_User_Account getUser() {
+     public Model_User_Account getUser() {
         return user;
     }
 
     public void setUser(Model_User_Account user) {
         this.user = user;
+        panelMore.setUser(user);
     }
 
     private Model_User_Account user;
@@ -104,7 +106,7 @@ public class Chat_Bottom extends javax.swing.JPanel {
         add(panel, "wrap");
         panelMore = new Panel_More();
         panelMore.setVisible(false);
-        add(panelMore, "dock south,h 0!");  //  set height 0
+        add(panelMore, "dock south,h 0!");
     }
     
     private void refresh() {
@@ -118,7 +120,7 @@ public class Chat_Bottom extends javax.swing.JPanel {
     private void eventSend(JIMSendTextPane txt) {
         String text = txt.getText().trim();
         if (!text.equals("")) {
-            Model_Send_Message message = new Model_Send_Message(Service.getInstance().getUser().getUserID(), user.getUserID(), text);
+            Model_Send_Message message = new Model_Send_Message(MessageType.TEXT, Service.getInstance().getUser().getUserID(), user.getUserID(), text);
             send(message);
             PublicEvent.getInstance().getEventChat().sendMessage(message);
             txt.setText("");

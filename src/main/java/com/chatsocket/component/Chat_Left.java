@@ -1,5 +1,6 @@
 package com.chatsocket.component;
 
+import com.chatsocket.model.Model_Receive_Image;
 import java.awt.Color;
 import javax.swing.Icon;
 
@@ -22,12 +23,18 @@ public class Chat_Left extends javax.swing.JLayeredPane {
         txt.setFile(fileName, fileSize);
     }
     
-    public void setImage(Icon ...image) {
-        txt.setImage(false, image);
+    public void setImage(Icon... image) {
+      //  txt.setImage(false, image);
+      //    Update next
     }
     
-    public void setImage(String ...image) {
-        txt.setImage(false, image);
+    public void setImage(Model_Receive_Image dataImage) {
+        txt.setImage(false, dataImage);
+    }
+
+    public void setEmoji(Icon icon) {
+        txt.hideText();
+        txt.setEmoji(false, icon);
     }
     
     public void setTime () {

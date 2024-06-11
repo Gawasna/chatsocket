@@ -1,13 +1,20 @@
 package com.chatsocket.service;
 
+import com.chatsocket.event.EventFileReceiver;
 import com.chatsocket.event.PublicEvent;
+import com.chatsocket.model.Model_File_Receiver;
+import com.chatsocket.model.Model_File_Sender;
 import com.chatsocket.model.Model_Receive_Message;
+import com.chatsocket.model.Model_Send_Message;
 import com.chatsocket.model.Model_User_Account;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class Service {
@@ -17,6 +24,8 @@ public class Service {
     private final int PORT_NUMBER = 9999;
     private final String IP = "localhost";
     private Model_User_Account user;
+    private List<Model_File_Sender> fileSender;
+    private List<Model_File_Receiver> fileReceiver;
 
     public static Service getInstance() {
         if (instance == null) {
@@ -26,6 +35,8 @@ public class Service {
     }
 
     private Service() {
+        fileSender = new ArrayList<>();
+        fileReceiver = new ArrayList<>();
     }
 
     public void startServer() {
@@ -69,6 +80,40 @@ public class Service {
             client.open();
         } catch (URISyntaxException e) {
             error(e);
+        }
+    }
+
+    public Model_File_Sender addFile(File file, Model_Send_Message message) throws IOException {
+        Model_File_Sender data = new Model_File_Sender(file, client, message);
+        message.setFile(data);
+        fileSender.add(data);
+        //  For send file one by one
+        if (fileSender.size() == 1) {
+            data.initSend();
+        }
+        return data;
+    }
+
+    public void fileSendFinish(Model_File_Sender data) throws IOException {
+        fileSender.remove(data);
+        if (!fileSender.isEmpty()) {
+            //  Start send new file when old file sending finish
+            fileSender.get(0).initSend();
+        }
+    }
+
+    public void fileReceiveFinish(Model_File_Receiver data) throws IOException {
+        fileReceiver.remove(data);
+        if (!fileReceiver.isEmpty()) {
+            fileReceiver.get(0).initReceive();
+        }
+    }
+
+    public void addFileReceiver(int fileID, EventFileReceiver event) throws IOException {
+        Model_File_Receiver data = new Model_File_Receiver(fileID, client, event);
+        fileReceiver.add(data);
+        if (fileReceiver.size() == 1) {
+            data.initReceive();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.chatsocket.component;
 
+import com.chatsocket.model.Model_File_Sender;
+import com.chatsocket.model.Model_Receive_Image;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
@@ -44,7 +46,7 @@ public class Chat_Item extends javax.swing.JLayeredPane {
     public void setText(String text) {
         txt.setText(text);
     }
-    
+
     public void setTime(String time) {
         JLayeredPane layer = new JLayeredPane();
         layer.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
@@ -56,29 +58,28 @@ public class Chat_Item extends javax.swing.JLayeredPane {
         layer.add(label);
         add(layer);
     }
-    
-    public void setImage(boolean right, Icon ... image) {
-        if (image.length > 0) {
-            JLayeredPane layer = new JLayeredPane();
-            layer.setLayout(new FlowLayout(right ? FlowLayout.RIGHT : FlowLayout.LEFT));
-            layer.setBorder(new EmptyBorder(0, 5, 0, 5));
-            Chat_Image chatImage = new Chat_Image(right);
-            chatImage.addImage(image);
-            layer.add(chatImage);
-            add(layer);
-        }
-    }
-    
-    public void setImage(boolean right, String... image) {
+
+    public void setImage(boolean right, Model_File_Sender fileSender) {
         JLayeredPane layer = new JLayeredPane();
-        layer.setLayout(new FlowLayout(right?FlowLayout.RIGHT:FlowLayout.LEFT));
+        layer.setLayout(new FlowLayout(right ? FlowLayout.RIGHT : FlowLayout.LEFT));
         layer.setBorder(new EmptyBorder(0, 5, 0, 5));
-        Chat_Image chatimage= new Chat_Image(right);
-        chatimage.addImage(image);
-        layer.add(chatimage);
+        Chat_Image chatImage = new Chat_Image(right);
+        chatImage.addImage(fileSender);
+        layer.add(chatImage);
+        add(layer);
+
+    }
+
+    public void setImage(boolean right, Model_Receive_Image dataImage) {
+        JLayeredPane layer = new JLayeredPane();
+        layer.setLayout(new FlowLayout(right ? FlowLayout.RIGHT : FlowLayout.LEFT));
+        layer.setBorder(new EmptyBorder(0, 5, 0, 5));
+        Chat_Image chatImage = new Chat_Image(right);
+        chatImage.addImage(dataImage);
+        layer.add(chatImage);
         add(layer);
     }
-    
+
     public void setFile(String fileName, String fileSize) {
         JLayeredPane layer = new JLayeredPane();
         layer.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -88,6 +89,16 @@ public class Chat_Item extends javax.swing.JLayeredPane {
         layer.add(chatFile);
         add(layer);
     }
+
+    public void setEmoji(boolean right, Icon icon) {
+        JLayeredPane layer = new JLayeredPane();
+        layer.setLayout(new FlowLayout(right ? FlowLayout.RIGHT : FlowLayout.LEFT));
+        layer.setBorder(new EmptyBorder(0, 5, 0, 5));
+        layer.add(new JLabel(icon));
+        add(layer);
+        setBackground(null);
+    }
+
     
     public void sendSuccess() {
         if (label != null) {
@@ -119,14 +130,15 @@ public class Chat_Item extends javax.swing.JLayeredPane {
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D gp = (Graphics2D) g;
-        gp.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gp.setColor(getBackground());
-        gp.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-        super.paintComponent(g); 
-    }
-    
+    protected void paintComponent(Graphics grphcs) {
+        Graphics2D g2 = (Graphics2D) grphcs;
+        if (getBackground() != null) {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+        }
+        super.paintComponent(grphcs);
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.chatsocket.swing.JIMSendTextPane txt;
