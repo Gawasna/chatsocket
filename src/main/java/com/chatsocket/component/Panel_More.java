@@ -12,14 +12,18 @@ import com.chatsocket.swing.ScrollBar;
 import com.chatsocket.swing.WrapLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dialog;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -63,41 +67,48 @@ public class Panel_More extends javax.swing.JPanel {
     }
 
     private JButton getButtonImage() {
-        OptionButton cmd = new OptionButton();
-        cmd.setIcon(new ImageIcon(getClass().getResource("/images/image.png")));
-        cmd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                JFileChooser ch = new JFileChooser();
-                ch.setMultiSelectionEnabled(true);
-                ch.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        return file.isDirectory() || isImageFile(file);
-                    }
+    OptionButton cmd = new OptionButton();
+    cmd.setIcon(new ImageIcon(getClass().getResource("/images/image.png")));
+    cmd.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            JFileChooser ch = new JFileChooser();
+            
+            // Đặt thư mục mặc định là thư mục "Pictures" của Windows
+            String userHome = System.getProperty("user.home");
+            String picturesPath = userHome + "\\Pictures"; // Đường dẫn đến thư mục Pictures
+            
+            ch.setCurrentDirectory(new File(picturesPath));
+            ch.setMultiSelectionEnabled(true);
+            ch.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.isDirectory() || isImageFile(file);
+                }
 
-                    @Override
-                    public String getDescription() {
-                        return "Image File";
+                @Override
+                public String getDescription() {
+                    return "Image File";
+                }
+            });
+            int option = ch.showOpenDialog(Main.getFrames()[0]);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                File files[] = ch.getSelectedFiles();
+                try {
+                    for (File file : files) {
+                        Model_Send_Message message = new Model_Send_Message(MessageType.IMAGE, Service.getInstance().getUser().getUserID(), user.getUserID(), "");
+                        Service.getInstance().addFile(file, message);
+                        PublicEvent.getInstance().getEventChat().sendMessage(message);
                     }
-                });
-                int option = ch.showOpenDialog(Main.getFrames()[0]);
-                if (option == JFileChooser.APPROVE_OPTION) {
-                    File files[] = ch.getSelectedFiles();
-                    try {
-                        for (File file : files) {
-                            Model_Send_Message message = new Model_Send_Message(MessageType.IMAGE, Service.getInstance().getUser().getUserID(), user.getUserID(), "");
-                            Service.getInstance().addFile(file, message);
-                            PublicEvent.getInstance().getEventChat().sendMessage(message);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        });
-        return cmd;
-    }
+        }
+    });
+    return cmd;
+}
+
 
     private JButton getButtonFile() {
         OptionButton cmd = new OptionButton();
@@ -196,7 +207,7 @@ public class Panel_More extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private boolean isImageFile(File file) {
         String name = file.getName().toLowerCase();
         return name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg") || name.endsWith(".gif");

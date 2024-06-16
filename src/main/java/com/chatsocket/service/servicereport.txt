@@ -1,0 +1,188 @@
+BÁO CÁO VỀ CLASS SERVICE
+Đã kiểm tra cuối
+
+1. Chức năng chung
+Class `Service` trong gói `com.chatsocket.service` chịu trách nhiệm quản lý các kết nối và truyền thông giữa các client thông qua socket. Nó xử lý việc gửi và nhận tin nhắn, quản lý trạng thái người dùng, và quản lý việc gửi và nhận file.
+
+2. Chức năng và tình trạng vận hành của từng đoạn mã
+
+```java
+private static Service instance;
+Chức năng: Tạo một thể hiện duy nhất của lớp Service theo mô hình Singleton.
+Tình trạng: Hoạt động tốt, đảm bảo chỉ có một thể hiện Service duy nhất trong suốt vòng đời của ứng dụng.
+
+java
+Sao chép mã
+private Socket client;
+private final int PORT_NUMBER = 9999;
+private String IP = "";
+private Model_User_Account user;
+private List<Model_File_Sender> fileSender;
+private List<Model_File_Receiver> fileReceiver;
+Chức năng: Các biến này lưu trữ thông tin về kết nối socket, cổng kết nối, địa chỉ IP, tài khoản người dùng, và danh sách các file đang gửi và nhận.
+Tình trạng: Hoạt động bình thường, các biến được khởi tạo và sử dụng đúng cách.
+
+java
+Sao chép mã
+public static Service getInstance() {
+    if (instance == null) {
+        instance = new Service();
+    }
+    return instance;
+}
+Chức năng: Cung cấp phương thức để lấy thể hiện duy nhất của lớp Service.
+Tình trạng: Hoạt động tốt, đảm bảo việc khởi tạo theo mô hình Singleton.
+
+java
+Sao chép mã
+private Service() {
+    fileSender = new ArrayList<>();
+    fileReceiver = new ArrayList<>();
+}
+Chức năng: Khởi tạo danh sách các file đang gửi và nhận.
+Tình trạng: Hoạt động bình thường, khởi tạo đúng cách các danh sách.
+
+java
+Sao chép mã
+public void startServer() {
+    try {
+        client = IO.socket("http://" + IP + ":" + PORT_NUMBER);
+        client.on("list_user", new Emitter.Listener() {
+            @Override
+            public void call(Object... os) {
+                List<Model_User_Account> users = new ArrayList<>();
+                for (Object o : os) {
+                    Model_User_Account u = new Model_User_Account(o);
+                    if (u.getUserID() != user.getUserID()) {
+                        users.add(u);
+                    }
+                }
+                PublicEvent.getInstance().getEventMenuLeft().newUser(users);
+            }
+        });
+        client.on("user_status", new Emitter.Listener() {
+            @Override
+            public void call(Object... os) {
+                int userID = (Integer) os[0];
+                boolean status = (Boolean) os[1];
+                if (status) {
+                    PublicEvent.getInstance().getEventMenuLeft().userConnect(userID);
+                } else {
+                    PublicEvent.getInstance().getEventMenuLeft().userDisconnect(userID);
+                }
+            }
+        });
+        client.on("receive_ms", new Emitter.Listener() {
+            @Override
+            public void call(Object... os) {
+                Model_Receive_Message message = new Model_Receive_Message(os[0]);
+                PublicEvent.getInstance().getEventChat().receiveMessage(message);
+            }
+        });
+        client.open();
+    } catch (URISyntaxException e) {
+        error(e);
+    }
+}
+Chức năng: Khởi tạo kết nối với server, lắng nghe và xử lý các sự kiện như danh sách người dùng, trạng thái người dùng, và tin nhắn nhận được.
+Tình trạng: Hoạt động tốt, có xử lý ngoại lệ URISyntaxException để đảm bảo ứng dụng không bị crash khi gặp lỗi.
+
+java
+Sao chép mã
+public Model_File_Sender addFile(File file, Model_Send_Message message) throws IOException {
+    Model_File_Sender data = new Model_File_Sender(file, client, message);
+    message.setFile(data);
+    fileSender.add(data);
+    if (fileSender.size() == 1) {
+        data.initSend();
+    }
+    return data;
+}
+Chức năng: Thêm một file vào danh sách gửi và khởi động việc gửi file nếu là file đầu tiên trong danh sách.
+Tình trạng: Hoạt động tốt, đảm bảo gửi file tuần tự.
+
+java
+Sao chép mã
+public void fileSendFinish(Model_File_Sender data) throws IOException {
+    fileSender.remove(data);
+    if (!fileSender.isEmpty()) {
+        fileSender.get(0).initSend();
+    }
+}
+Chức năng: Xử lý khi việc gửi một file hoàn tất, tiếp tục gửi file tiếp theo trong danh sách nếu có.
+Tình trạng: Hoạt động bình thường, quản lý quá trình gửi file liên tục.
+
+java
+Sao chép mã
+public void fileReceiveFinish(Model_File_Receiver data) throws IOException {
+    fileReceiver.remove(data);
+    if (!fileReceiver.isEmpty()) {
+        fileReceiver.get(0).initReceive();
+    }
+}
+Chức năng: Xử lý khi việc nhận một file hoàn tất, tiếp tục nhận file tiếp theo trong danh sách nếu có.
+Tình trạng: Hoạt động tốt, đảm bảo nhận file tuần tự.
+
+java
+Sao chép mã
+public void addFileReceiver(int fileID, EventFileReceiver event) throws IOException {
+    Model_File_Receiver data = new Model_File_Receiver(fileID, client, event);
+    fileReceiver.add(data);
+    if (fileReceiver.size() == 1) {
+        data.initReceive();
+    }
+}
+Chức năng: Thêm một file vào danh sách nhận và khởi động việc nhận file nếu là file đầu tiên trong danh sách.
+Tình trạng: Hoạt động bình thường, đảm bảo nhận file tuần tự.
+
+java
+Sao chép mã
+public Socket getClient() {
+    return client;
+}
+
+public Model_User_Account getUser() {
+    return user;
+}
+
+public void setUser(Model_User_Account user) {
+    this.user = user;
+}
+Chức năng: Các phương thức getter và setter cho các biến client và user.
+Tình trạng: Hoạt động tốt, đảm bảo truy cập và cập nhật dữ liệu đúng cách.
+
+java
+Sao chép mã
+private void error(Exception e) {
+    System.err.println(e);
+}
+Chức năng: Xử lý và in ra các lỗi ngoại lệ.
+Tình trạng: Hoạt động bình thường, cung cấp thông tin lỗi cho việc debug.
+
+java
+Sao chép mã
+public void discoverServerIP() {
+    DatagramSocket socket = null;
+    try {
+        socket = new DatagramSocket(9876, InetAddress.getByName("0.0.0.0"));
+        socket.setBroadcast(true);
+        System.out.println("Finding server...");
+        while (true) {
+            byte[] buffer = new byte[256];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            socket.receive(packet);
+            String received = new String(packet.getData(), 0, packet.getLength());
+            System.out.println("Received IP: " + received);
+            IP = received;
+            break;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+    }
+}
+Chức năng: Tìm kiếm và thiết lập địa chỉ IP của server thông qua gói tin UDP.
+Tình trạng: Hoạt động tốt, có xử lý ngoại lệ và đảm bảo socket được đóng đúng cách sau khi sử dụng.

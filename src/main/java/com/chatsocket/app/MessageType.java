@@ -1,5 +1,6 @@
 package com.chatsocket.app;
 
+//final check done
 public enum MessageType {
     TEXT(1), EMOJI(2), FILE(3), IMAGE(4);
 

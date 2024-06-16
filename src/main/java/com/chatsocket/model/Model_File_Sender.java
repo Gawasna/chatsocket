@@ -7,7 +7,7 @@ import io.socket.client.Socket;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-//client
+//client 22+1 check
 public class Model_File_Sender {
 
     public Model_Send_Message getMessage() {

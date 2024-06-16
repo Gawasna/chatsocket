@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.chatsocket.component;
 
 import com.chatsocket.event.EventFileReceiver;
@@ -15,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-
+//checked
 public class Image_Item extends javax.swing.JLayeredPane {
 
     public Image_Item() {

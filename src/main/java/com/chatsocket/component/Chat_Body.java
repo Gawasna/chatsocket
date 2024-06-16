@@ -22,11 +22,11 @@ public class Chat_Body extends javax.swing.JPanel {
     }
 
     private void init() {
-        body.setLayout(new MigLayout("fillx","","5[]5"));
+        body.setLayout(new MigLayout("fillx", "", "5[bottom]5"));
         sp.setVerticalScrollBar(new ScrollBar());
         sp.getVerticalScrollBar().setBackground(Color.WHITE);
     }
-    
+
     public void addItemLeft(Model_Receive_Message data) {
         if (data.getMessageType() == MessageType.TEXT) {
             Chat_Left item = new Chat_Left();

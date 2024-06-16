@@ -14,15 +14,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
+//checked
 public class Service {
 
     private static Service instance;
     private Socket client;
     private final int PORT_NUMBER = 9999;
-    private final String IP = "localhost";
+    private String IP = "";
     private Model_User_Account user;
     private List<Model_File_Sender> fileSender;
     private List<Model_File_Receiver> fileReceiver;
@@ -131,5 +134,29 @@ public class Service {
 
     private void error(Exception e) {
         System.err.println(e);
+    }
+
+    public void discoverServerIP() {
+        DatagramSocket socket = null;
+        try {
+            socket = new DatagramSocket(9876, InetAddress.getByName("0.0.0.0"));
+            socket.setBroadcast(true);
+            System.out.println("Finding server...");
+            while (true) {
+                byte[] buffer = new byte[256];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+                String received = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("Received IP: " + received);
+                IP = received;
+                break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        }
     }
 }
