@@ -39,9 +39,18 @@ public class Chat_Left extends javax.swing.JLayeredPane {
         txt.setEmoji(false, icon);
     }
     
+    public String getCurrentTimeFormatted() {
+        // Lấy thời gian hiện tại
+        Date now = new Date();
+        // Định dạng theo HH:MM A
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        // Chuyển đổi Date thành chuỗi theo định dạng đã chỉ định
+        String formattedTime = sdf.format(now);
+        return formattedTime;
+    }
+    
     public void setTime(long timestamp) {
-    String time = new SimpleDateFormat("h:mm a").format(new Date(timestamp));
-    txt.setTime(time);
+        txt.setTime(getCurrentTimeFormatted()); 
     }   
     
     @SuppressWarnings("unchecked")
