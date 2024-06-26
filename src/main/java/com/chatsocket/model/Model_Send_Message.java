@@ -53,6 +53,17 @@ public class Model_Send_Message {
         this.text = text;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+    
+    public Model_Send_Message(String text, MessageType messageType, Model_File_Sender file) {
+        this.text = text;
+        this.messageType = messageType;
+        this.file = file;
+        this.timestamp = System.currentTimeMillis(); 
+    }
+    //fififfi
     public Model_Send_Message() {
     }
 
@@ -61,7 +72,8 @@ public class Model_Send_Message {
     private int toUserID;
     private String text;
     private Model_File_Sender file;
-
+    private long timestamp;
+    
     public JSONObject toJsonObject() {
         try {
             JSONObject json = new JSONObject();

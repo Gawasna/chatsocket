@@ -2,9 +2,11 @@ package com.chatsocket.component;
 
 import com.chatsocket.model.Model_File_Sender;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import javax.swing.Icon;
 
 public class Chat_Right extends javax.swing.JLayeredPane {
@@ -40,9 +42,10 @@ public class Chat_Right extends javax.swing.JLayeredPane {
         txt.setEmoji(true, icon);
     }
     
-    public void setTime () {
-        txt.setTime("1:30 PM");
-    }    
+    public void setTime(long timestamp) {
+    String time = new SimpleDateFormat("h:mm a").format(new Date(timestamp));
+    txt.setTime(time);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

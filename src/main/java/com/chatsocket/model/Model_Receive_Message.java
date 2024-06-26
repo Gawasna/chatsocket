@@ -37,7 +37,18 @@ public class Model_Receive_Message {
     public void setDataImage(Model_Receive_Image dataImage) {
         this.dataImage = dataImage;
     }
+    
+    public Model_Receive_Message(String text, MessageType messageType, Model_Receive_Image dataImage) {
+        this.text = text;
+        this.messageType = messageType;
+        this.dataImage = dataImage;
+        this.timestamp = System.currentTimeMillis(); 
+    }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+    //fififi
     public Model_Receive_Message(Object json) {
         JSONObject obj = (JSONObject) json;
         try {
@@ -56,6 +67,7 @@ public class Model_Receive_Message {
     private int fromUserID;
     private String text;
     private Model_Receive_Image dataImage;
+    private long timestamp;
 
     public JSONObject toJsonObject() {
         try {
