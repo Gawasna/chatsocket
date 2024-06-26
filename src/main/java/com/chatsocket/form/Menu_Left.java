@@ -114,8 +114,6 @@ public class Menu_Left extends javax.swing.JPanel {
 
         menu = new javax.swing.JLayeredPane();
         menuMessage = new com.chatsocket.component.MenuButton();
-        menuGroup = new com.chatsocket.component.MenuButton();
-        menuBox = new com.chatsocket.component.MenuButton();
         sp = new javax.swing.JScrollPane();
         menuList = new javax.swing.JLayeredPane();
 
@@ -135,28 +133,6 @@ public class Menu_Left extends javax.swing.JPanel {
             }
         });
         menu.add(menuMessage);
-
-        menuGroup.setBorder(null);
-        menuGroup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-group-30 (1).png"))); // NOI18N
-        menuGroup.setIconSelected(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-group-30.png"))); // NOI18N
-        menuGroup.setIconSimple(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-group-30 (1).png"))); // NOI18N
-        menuGroup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuGroupActionPerformed(evt);
-            }
-        });
-        menu.add(menuGroup);
-
-        menuBox.setBorder(null);
-        menuBox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-mail-30 (1).png"))); // NOI18N
-        menuBox.setIconSelected(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-mail-30.png"))); // NOI18N
-        menuBox.setIconSimple(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-mail-30 (1).png"))); // NOI18N
-        menuBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuBoxActionPerformed(evt);
-            }
-        });
-        menu.add(menuBox);
 
         sp.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         sp.setViewportBorder(null);
@@ -193,35 +169,15 @@ public class Menu_Left extends javax.swing.JPanel {
     private void menuMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuMessageActionPerformed
         if (!menuMessage.isSelected()) {
         menuMessage.setSelected(true);
-        menuGroup.setSelected(false);
-        menuBox.setSelected(false);
+//        menuGroup.setSelected(false);
+//        menuBox.setSelected(false);
         showMessage();
         }
     }//GEN-LAST:event_menuMessageActionPerformed
 
-    private void menuGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGroupActionPerformed
-        if (!menuGroup.isSelected()) {
-        menuMessage.setSelected(false);
-        menuGroup.setSelected(true);
-        menuBox.setSelected(false);
-        showGroup();
-        }
-    }//GEN-LAST:event_menuGroupActionPerformed
-
-    private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
-        if (!menuBox.isSelected()){
-        menuMessage.setSelected(false);
-        menuGroup.setSelected(false);
-        menuBox.setSelected(true);
-        showBox();
-        }
-    }//GEN-LAST:event_menuBoxActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLayeredPane menu;
-    private com.chatsocket.component.MenuButton menuBox;
-    private com.chatsocket.component.MenuButton menuGroup;
     private javax.swing.JLayeredPane menuList;
     private com.chatsocket.component.MenuButton menuMessage;
     private javax.swing.JScrollPane sp;
